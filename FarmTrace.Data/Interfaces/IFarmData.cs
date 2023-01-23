@@ -9,7 +9,7 @@ namespace FarmTrace.Data.Interfaces
 {
   public interface IFarmData
   {
-    List<FarmInfo> GetAllFarmData();
-    FarmInfo GetFarmData(string farmName);
+    List<FarmInfo> GetAllValidFarmData();
+    FarmInfo GetValidFarmData(string farmName);
   }
 }

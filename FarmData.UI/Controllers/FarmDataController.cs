@@ -14,7 +14,7 @@ namespace FarmTrace.UI.Controllers
     [HttpGet(Name = "GetAllFarmData")]
     public IEnumerable<FarmInfo> Get()
     {
-      return _farmData.GetAllFarmData();
+      return _farmData.GetAllValidFarmData();
     }
     //[HttpGet]
     //public ActionResult<FarmInfo> GetFarmDataById(string farmName)

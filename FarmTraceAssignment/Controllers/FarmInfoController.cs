@@ -7,7 +7,7 @@ using FarmTrace.Data.Repository;
 namespace FarmTraceAssignment.Controllers
 {
   [ApiController]
-  [Route("api/[controller]")]
+  [Route("api/[controller]/[action]")]
   public class FarmInfoController : ControllerBase
   {
     private IFarmData _farmData = new FarmDataRepository();
@@ -15,12 +15,12 @@ namespace FarmTraceAssignment.Controllers
     [HttpGet(Name = "GetAllFarmData")]
     public IEnumerable<FarmInfo> Get()
     {
-      return _farmData.GetAllFarmData();
+      return _farmData.GetAllValidFarmData();
     }
-    //[HttpGet]
-    //public ActionResult<FarmInfo> GetFarmDataById(string farmName)
-    //{
-    //  return _farmData.GetFarmData(farmName);
-    //}
+    [HttpGet(Name = "GetFarmDataById")]
+    public FarmInfo GetFarmDataById(string farmName)
+    {
+      return _farmData.GetValidFarmData(farmName);
+    }
   }
 }
