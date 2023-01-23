@@ -1,6 +1,7 @@
 ﻿using FarmTrace.Data.Interfaces;
 using FarmTrace.Data.Models;
 using Newtonsoft.Json;
+using System.Linq;
 
 namespace FarmTrace.Data.Repository
 {
@@ -17,16 +18,34 @@ namespace FarmTrace.Data.Repository
 
     private List<FarmInfo> RunValidationRules(List<FarmInfo> jsonData)
     {
-      var validFarmList = jsonData.Where
-        (
-          x => x.Animals.Any(
-            // Female Animals
-            y => y.Sex.Equals("Female"))
-            // If Cow, Feedings are limited to 0 to 30 and Milkings are limited to 0 to 35
-            && x.Animals.Any(y => y.AnimalType.Equals("Cow") && y.Feedings.Any(z => z.Amount >= 0 && z.Amount <= 30) && y.Milkings.Any(z => z.Amount >= 0 && z.Amount <= 35))
-            // If Goat, Feedings are limited to 0 to 3 and Milkings are limited to 0 to 8
-            && x.Animals.Any(y => y.AnimalType.Equals("Goat") && y.Feedings.Any(z => z.Amount >= 0 && z.Amount <= 3) && y.Milkings.Any(z => z.Amount >= 0 && z.Amount <= 8))
-      ).ToList();
+      var validFarmList = new List<FarmInfo>();
+
+      foreach (var item in jsonData)
+      {
+        var validAnimals = item.Animals.Where(animal => animal.Sex.Equals("Female") 
+        && (animal.AnimalType.Equals("Cow") 
+        || animal.AnimalType.Equals("Goat"))).ToList();
+
+        foreach (var animal in validAnimals)
+        {
+          if (animal.AnimalType.Equals("Cow"))
+          {
+            var validFeedings = animal.Feedings.Where(feeding => feeding.Amount >= 0 && feeding.Amount <= 30);
+            var validMilkings = animal.Milkings.Where(milking => milking.Amount >= 0 && milking.Amount <= 35);
+            animal.Feedings = validFeedings.ToArray();
+            animal.Milkings = validMilkings.ToArray();
+          }
+          else if (animal.AnimalType.Equals("Goat"))
+          {
+            var validFeedings = animal.Feedings.Where(feeding => feeding.Amount >= 0 && feeding.Amount <= 3);
+            var validMilkings = animal.Milkings.Where(milking => milking.Amount >= 0 && milking.Amount <= 8);
+            animal.Feedings = validFeedings.ToArray();
+            animal.Milkings = validMilkings.ToArray();
+          }
+        }
+        validFarmList.Add(new FarmInfo(item.Name, validAnimals.ToArray()));
+      }
+
       return validFarmList;
     }
 
