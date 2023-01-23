@@ -1,0 +1,20 @@
+<h1 id="tableLabel">Farm Data</h1>
+
+<p>This component demonstrates fetching farm data from the server.</p>
+
+<p *ngIf="!farmInfoList"><em>Loading...</em></p>
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="farmInfoList">
+  <thead>
+    <tr>
+      <th>Farm Name</th>
+      
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let farmInfo of farmInfoList">
+      <td>{{ farmInfo.name }}</td>
+      
+    </tr>
+  </tbody>
+</table>
